@@ -1,0 +1,66 @@
+<html>
+
+<head>
+    <title>Chat application with Node and Socket.io</title>
+
+    <style>
+      * { margin: 0; padding: 0; }
+      body { font: 14px Helvetica, Arial; }
+      h1 {color:#e44500;text-align: center;padding: 10px;}
+      input#msg {border: solid black 1px; padding: 10px; width: 90%;}
+      input#send { border: 0; padding: 10px; background-color: #4ab04d; }
+    </style>
+</head>
+
+<body>
+    <h1>Tango - chat with socket.io</h1>
+    <!--Message box: To show the messages-->
+    <div id="msgBox" style="height: 200px; width: 400px; border: 1px solid black;margin-left:10px;"></div>
+    <!--Textbox: to enter the message text-->
+    <input type="text" id="msg" placeholder="Your message..."style="width:300px; margin:10px;"/>
+    <!--Send: A button to send the message to others-->
+    <input type="submit" id="send" value="Send" />
+    <div id="status"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+
+    <script>
+        var name,
+            socket = io.connect("http://localhost:8080");
+        $(function () {
+            //ask the user to enter their name.
+            name = window.prompt("please enter your name");
+
+            //When send button is clicked on, send the message to server
+            $("#send").click(function () {
+                //send to the server with person name and message
+                socket.emit("clientMsg", {
+                    "name": name,
+                    "msg": $("#msg").val()
+                });
+            });
+
+            socket.on("serverMsg", function (data) {
+                //Append the message from the server to the message box
+                $("#msgBox").append("<strong>" + data.name + "</strong>: " + data.msg + "<br/>");
+            });
+
+            $("#msg").on("keyup", function (event) {
+                socket.emit("sender", {
+                    name: name
+                });
+            });
+
+            socket.on("sender", function (data) {
+                $("#status").html(data.name + " is typing");
+                setTimeout(function () {
+                    $("#status").html('');
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+
+</html>
+

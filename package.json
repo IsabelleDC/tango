@@ -1,0 +1,13 @@
+{
+  "name": "tango-chat",
+  "version": "1.0.0",
+  "dependencies": {
+        "express": "~3.3.4",
+        "socket.io": "~1.2.1"
+    },
+  "description": "coding challenge for tango",
+  "author": "Isabelle de Choulot",
+  "license": "ISC"
+}
+
+
